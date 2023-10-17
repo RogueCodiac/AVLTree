@@ -617,7 +617,7 @@ private:
 
         // then dump the text to out.
         for (const auto& row: formattedGrid) {
-            out << ' ' << row << '\n';
+            out << row << '\n';
         }
 
         return out;
