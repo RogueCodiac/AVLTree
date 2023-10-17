@@ -161,7 +161,7 @@ private:
      * @return nullptr if the value does not exist in the tree.
      *         Otherwise, a pointer to the node, closest to the root, having the value.
      */
-    static Node* search(Node * root, const T& value) {
+    static Node* search(Node *root, const T& value) {
         if (not root) {
             return nullptr;
         }
@@ -176,6 +176,14 @@ private:
 
         // root->key > value
         return search(root->left, value);
+    }
+
+    /**
+     * @param root node to get the balance for
+     * @return the balance for the node
+     */
+    static size_type getBalance(Node *root) {
+        return root ? height(root->left) - height(root->right) : 0;
     }
 
     /**
@@ -233,7 +241,7 @@ private:
         root->height = 1 + max(height(root->left), height(root->right));
 
         // calculate new root balance
-        const auto balance{height(root->left) - height(root->right)};
+        const auto balance{getBalance(root)};
 
         if (1 < balance) {
             if (value < root->left->key) {
@@ -308,7 +316,7 @@ private:
             }
         }
 
-        // Tree became empty
+        // Subtree became empty
         if (not root) {
             return root;
         }
@@ -317,17 +325,17 @@ private:
         root->height = 1 + max(height(root->left), height(root->right));
 
         // calculate new balance
-        auto balance{height(root->left) - height(root->right)};
+        auto balance{getBalance(root)};
 
         if (balance > 1) {
-            if (height(root->left) >= height(root->right)) {
+            if (0 <= getBalance(root->left)) {
                 return rightRotation(root);
             } else {
                 root->left = leftRotation(root->left);
                 return rightRotation(root);
             }
         } else if (balance < -1) {
-            if (height(root->right) >= height(root->left)) {
+            if (getBalance(root->right) <= 0) {
                 return leftRotation(root);
             } else {
                 root->right = rightRotation(root->right);
